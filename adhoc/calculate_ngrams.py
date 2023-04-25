@@ -86,7 +86,7 @@ CONNECTOR_WORDS = "og i det at en til på af der de den med for ikke jeg som har
 def clean_up_sentence(sentence: str, keep_chars: str = "") -> str:
     """Remove punctuation and make lowercase."""
     punctuation = string.punctuation
-    punctuation += "«»"
+    punctuation += "«»„“"
     if keep_chars:
         for char in keep_chars:
             punctuation = punctuation.replace(char, "")
