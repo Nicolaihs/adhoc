@@ -220,12 +220,12 @@ def filter(filepath: str, word: str | None = None, show_unexpecteds: bool = Fals
     filtered_words, unexpecteds = filter_words_by_pronunciation(
         words, MOST_EXPECTED, debug_word=word
     )
-    for fword in filtered_words:
-        if not word:
-            print(fword["word"], fword["ipa"])
-        else:
-            if fword["word"] == word:
-                print(fword["word"], fword["ipa"])
+    # for fword in filtered_words:
+    #     if not word:
+    #         print(fword["word"], fword["ipa"])
+    #     else:
+    #         if fword["word"] == word:
+    #             print(fword["word"], fword["ipa"])
 
     if word:
         print("Unexpected:")
@@ -235,6 +235,27 @@ def filter(filepath: str, word: str | None = None, show_unexpecteds: bool = Fals
         print("Unexpected:")
         for word, unexpected in unexpecteds.items():
             print(word, unexpected)
+
+    word_list = [w["word"] for w in filtered_words]
+
+    # group words by length
+    word_groups = {}
+    for word in word_list:
+        length = len(word)
+        if length not in word_groups:
+            word_groups[length] = []
+        word_groups[length].append(word)
+
+    # display groups in three columns
+    column_width = max(len(word) for word in word_list) + 2
+    num_columns = 6
+    for length, words in sorted(word_groups.items()):
+        print(f"Words of length {length}:")
+        words = sorted(words)
+        for i in range(0, len(words), num_columns):
+            column_words = words[i : i + num_columns]
+            print(" ".join(word.ljust(column_width) for word in column_words))
+        print()
 
 
 #    print("Unexpected:")
