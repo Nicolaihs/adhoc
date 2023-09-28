@@ -76,9 +76,36 @@ def tokenise_remove_pronouns_da(text: str) -> list:
     return tokens_without_stopwords
 
 
-def get_documents(source_path):
-    for root, dirs, files in os.walk(source_path):
+def split_text(text: str, splits: int = 2) -> List[str]:
+    if splits == 1:
+        return [text]
+    elif splits == 2:
+        return [text[: len(text) // 2], text[len(text) // 2 :]]
+    elif splits == 3:
+        return [
+            text[: len(text) // 3],
+            text[len(text) // 3 : (2 * len(text)) // 3],
+            text[(2 * len(text)) // 3 :],
+        ]
+    else:
+        raise ValueError("Splits must be 1, 2 or 3")
+
+
+def get_documents(source_path, splits: int = 2, skips: List[str] | None = None):
+    for root, _, files in os.walk(source_path):
         for file in files:
+            if skips:
+                skip_it = False
+                for skip in skips:
+                    if file == skip:
+                        skip_it = True
+                        break
+                    if "*" in skip and re.search(rf"{skip}", file):
+                        skip_it = True
+                        break
+                if skip_it:
+                    logger.info(f"Skipping {file}")
+                    continue
             if file.endswith(".txt"):
                 file_path = os.path.join(root, file)
                 with open(file_path, "r") as f:
@@ -93,71 +120,139 @@ def get_documents(source_path):
                         title = basename
                     content = f.read().strip()
 
-                    yield (author, f"{title}__1", content[: len(content) // 2])
-                    yield (author, f"{title}__2", content[len(content) // 2 :])
+                    for i, split in enumerate(split_text(content, splits)):
+                        yield (author, f"{title}__{i}", split)
+                    # if splits == 1:
+                    #     yield (author, title, content)
+                    # elif splits == 2:
+                    #     yield (author, f"{title}__1", content[: len(content) // 2])
+                    #     yield (author, f"{title}__2", content[len(content) // 2 :])
+                    # elif splits == 3:
+                    #     yield (author, f"{title}__1", content[: len(content) // 3])
+                    #     yield (
+                    #         author,
+                    #         f"{title}__2",
+                    #         content[len(content) // 3 : (2 * len(content)) // 3],
+                    #     )
+                    #     yield (
+                    #         author,
+                    #         f"{title}__3",
+                    #         content[(2 * len(content)) // 3 :],
+                    #     )
+                    # else:
+                    #     raise ValueError("Splits must be 1, 2 or 3")
+
+
+def get_corpus_filepath(name: str, save_dir: str | None) -> str:
+    if not save_dir:
+        save_dir = gettempdir()
+    pickle_file = os.path.join(save_dir, f"{name}_burrows.pickle")
+    return pickle_file
 
 
 def create_corpus(
+    name: str,
     source_path: str,
+    skips: List[str] | None = None,
     language: str = "da",
-    force_new=False,
     do_calibrate: bool = True,
-    save_file: str | None = None,
+    save_dir: str | None = None,
+    splits: int = 2,
 ):
-    if not save_file:
-        temp_dir = gettempdir()
-        pickle_file = os.path.join(temp_dir, os.path.basename(source_path) + ".pickle")
+    pickle_file = get_corpus_filepath(name, save_dir)
+    corpus = Corpus()
+    logger.info("Reading documents")
+    for author, title, content in get_documents(
+        source_path, splits=splits, skips=skips
+    ):
+        corpus.add_book(author, title, content)
+
+    logger.info("Tokenising corpus")
+    if language == "da":
+        corpus.tokenise(tokenise_remove_pronouns_da)
     else:
-        if not save_file.endswith(".pickle"):
-            save_file += ".pickle"
-        pickle_file = save_file
+        corpus.tokenise(tokenise_remove_pronouns_en)
 
-    if os.path.exists(pickle_file) and not force_new:
-        with open(pickle_file, "rb") as f:
-            corpus = pickle.load(f)
-        logger.info("Loaded corpus from pickle file")
-    else:
-        corpus = Corpus()
-        logger.info("Reading documents")
-        for author, title, content in get_documents(source_path):
-            corpus.add_book(author, title, content)
+    if do_calibrate:
+        logger.info("Calibrating reference corpus")
+        calibrate(corpus)
 
-        logger.info("Tokenising corpus")
-        if language == "da":
-            corpus.tokenise(tokenise_remove_pronouns_da)
-        else:
-            corpus.tokenise(tokenise_remove_pronouns_en)
+    logger.info(f"Saving corpus to pickle file to {pickle_file}")
+    with open(pickle_file, "wb") as f:
+        pickle.dump(corpus, f)
+    logger.info("Created corpus and saved to pickle file")
 
-        if do_calibrate:
-            logger.info("Calibrating reference corpus")
-            calibrate(corpus)
-
-        logger.info("Saving corpus to pickle file")
-        with open(pickle_file, "wb") as f:
-            pickle.dump(corpus, f)
-        logger.info("Created corpus and saved to pickle file")
-
-        logger.info("Finished")
+    logger.info("Finished")
     return corpus
 
 
+def load_reference_corpus(name: str, save_dir: str | None):
+    pickle_file = get_corpus_filepath(name, save_dir)
+
+    logger.info(f"Loading reference corpus from pickle file {pickle_file}")
+    with open(pickle_file, "rb") as f:
+        corpus = pickle.load(f)
+    return corpus
+
+
+@click.group()
+def cli():
+    pass
+
+
 @click.command()
+@click.option("--name", type=str, required=True)
 @click.option("--source-path", required=True, type=click.Path(exists=True))
-@click.option("--work", multiple=True)
+@click.option("--skip", type=str, multiple=True)
 @click.option("--language", type=click.Choice(["da", "en"]), default="da")
-@click.option("--force-new", type=bool, default=False, is_flag=True)
-@click.option("--vocab-size", type=int, default=50)
-@click.option("--save-file", type=str, default=None)
-def main(source_path, work: List[str], language, force_new, vocab_size, save_file):
-    reference_corpus = create_corpus(
-        source_path, language, force_new, do_calibrate=True, save_file=save_file
+@click.option("--save-dir", type=click.Path(exists=True))
+@click.option("--splits", type=int, default=2)
+def create(name, source_path, skip, language, save_dir, splits):
+    create_corpus(
+        name,
+        source_path,
+        language=language,
+        skips=skip,
+        do_calibrate=True,
+        save_dir=save_dir,
+        splits=splits,
     )
+
+
+@click.command()
+@click.option("--work", multiple=True)
+@click.option("--reference-name", required=True)
+@click.option("--source-path", type=click.Path(exists=True))
+@click.option("--skip", type=str, multiple=True)
+@click.option("--vocab-size", type=int, default=50)
+@click.option("--language", type=click.Choice(["da", "en"]), default="da")
+@click.option("--save-dir", type=click.Path(exists=True))
+@click.option("--splits", type=int, default=1)
+def analyze(
+    work, reference_name, source_path, skip, vocab_size, language, save_dir, splits
+):
+    if source_path:
+        skips = list(skip) + [os.path.basename(item) for item in work]
+        reference_corpus = create_corpus(
+            reference_name,
+            source_path,
+            language=language,
+            skips=skips,
+            do_calibrate=True,
+            save_dir=save_dir,
+            splits=splits,
+        )
+    else:
+        reference_corpus = load_reference_corpus(reference_name, save_dir=save_dir)
     work_corpus = Corpus()
     for work_file in work:
         with open(work_file, "r") as f:
-            work_corpus.add_book(
-                "unknown", os.path.basename(work_file), f.read().strip()
-            )
+            name = os.path.basename(work_file)
+            work_corpus.add_book("unknown", name, f.read().strip())
+            # for i, split in enumerate(split_text(f.read().strip(), splits=splits)):
+            #     work_corpus.add_book(
+            #         "unknown", splits > 1 and f"{name}__{i}" or name, split
+            #     )
 
         work_corpus.tokenise(tokenise_remove_pronouns_da)
 
@@ -166,13 +261,21 @@ def main(source_path, work: List[str], language, force_new, vocab_size, save_fil
         reference_corpus, work_corpus, vocab_size=vocab_size
     )
     # Sort df_deltas by the first column, which is the Burrows' Delta values
-    df_deltas.sort_values(by=df_deltas.columns[0], inplace=True, ascending=False)
+    df_deltas.sort_values(by=df_deltas.columns[0], inplace=True, ascending=True)
     print(df_deltas)
+
+    logger.info("Calculating probabilities")
+    probs = predict_proba(reference_corpus, work_corpus)
+    probs.sort_values(by=probs.columns[0], inplace=True, ascending=False)
+    print(probs)
 
     import ipdb
 
     ipdb.set_trace()
 
 
+cli.add_command(create)
+cli.add_command(analyze)
+
 if __name__ == "__main__":
-    main()
+    cli()
