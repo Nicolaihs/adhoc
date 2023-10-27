@@ -53,6 +53,27 @@ def argparser():
         "-kc",
         help="Special characters to keep from tokens (punctuation is otherwise stripped)",
     )
+    aparser.add_argument(
+        "--remove-listing-hyphenated-words",
+        "-rh",
+        type=str,
+        default="true",
+        help="Remove hyphenated words in listing contexts, like 'af familie- og fritidslivet' > af og fritidslivet",
+    )
+    aparser.add_argument(
+        "--remove-words-with-invalid-characters",
+        "-rw",
+        type=str,
+        default="true",
+        help="Remove words that are contains invalid characters",
+    )
+    aparser.add_argument(
+        "--remove-words-with-only-numbers",
+        "-rn",
+        type=str,
+        default="true",
+        help="Remove words that are only numbers",
+    )
     aparser.add_argument("--word", help="Choose a single word (for debugging purposes)")
     return aparser
 
@@ -62,18 +83,27 @@ def ppm(freq, size):
     return (freq / size) * 1000000
 
 
-def countInFile(filename, keep_characters):
+def countInFile(filename, keep_characters, remove_listing_hyphenated_words):
     puncts = punctuation + "«»"
     if keep_characters:
         for char in keep_characters:
             puncts = puncts.replace(char, "")
+    import re
+
+    # Compile regex
+    if remove_listing_hyphenated_words:
+        regex = re.compile(r"(\b)[a-zæøåA-ZÆØÅ][a-zæøå]+-( og| eller| samt|,)")
+    else:
+        regex = re.compile(r"(a)(e)")
     with open(filename) as f:
         table = str.maketrans("", "", puncts)
-        linewords = (line.translate(table).lower().split() for line in f)
+        linewords = (
+            re.sub(regex, r"\1\2", line).translate(table).lower().split() for line in f
+        )
         return Counter(chain.from_iterable(linewords))
 
 
-def count_corpus(dirname, keep_characters):
+def count_corpus(dirname, keep_characters, remove_listing_hyphenated_words):
     """Count all words in corpus (with root dir)"""
     dirnames = [
         dirname,
@@ -93,7 +123,11 @@ def count_corpus(dirname, keep_characters):
             else:
                 no_of_docs += 1
                 counts.update(
-                    countInFile(os.path.join(dirname, fname), keep_characters)
+                    countInFile(
+                        os.path.join(dirname, fname),
+                        keep_characters,
+                        remove_listing_hyphenated_words,
+                    )
                 )
                 if no_of_docs % 1000 == 0:
                     logging.info("... %s documents considered" % no_of_docs)
@@ -103,6 +137,19 @@ def count_corpus(dirname, keep_characters):
 
 def main(args):
     """Main loop"""
+    if args.remove_listing_hyphenated_words.lower() in ("true", "yes", "y", "1"):
+        args.remove_listing_hyphenated_words = True
+    else:
+        args.remove_listing_hyphenated_words = False
+    if args.remove_words_with_only_numbers.lower() in ("true", "yes", "y", "1"):
+        args.remove_words_with_only_numbers = True
+    else:
+        args.remove_words_with_only_numbers = False
+    if args.remove_words_with_invalid_characters in ("true", "yes", "y", "1"):
+        args.remove_words_with_invalid_characters = True
+    else:
+        args.remove_words_with_invalid_characters = False
+
     if args.source_path:
         table = process_corpus(args)
     else:
@@ -127,10 +174,22 @@ def lemma_candidates(args, table, col_sums):
     logging.info("Looping through table identifying lemma candidates")
     logging.info("-- minimum frequency: %s" % args.minimum_frequency)
     logging.info("-- initial zero cols: %s" % args.initial_zero_cols)
+    logging.info(
+        "-- removing hyphenated words in listing context: %s"
+        % args.remove_listing_hyphenated_words
+    )
+    logging.info(
+        "-- removing words with invalid characters: %s"
+        % args.remove_words_with_invalid_characters
+    )
+    logging.info(
+        "-- removing words with only numbers: %s" % args.remove_words_with_only_numbers
+    )
     with open(args.output_file, "w") as foutput:
         # Get col names from pandas table
         colnames = table.columns.tolist()
-        foutput.write(f"word;total_freq;{';'.join(colnames)}\n")
+        colheader = "\t".join(colnames)
+        foutput.write(f"word\ttotal_freq\t{colheader}\n")
         for index, data in table.iterrows():
             if args.word and index != args.word:
                 continue
@@ -143,8 +202,26 @@ def lemma_candidates(args, table, col_sums):
                 #                   f"Skipping {index} due to minimum frequency {vector}: {sum(vector)}"
                 #              )
                 continue
-
-            out = f"{index};{sum(vector)};{';'.join(map(str, vector))}\n"
+            if args.remove_words_with_invalid_characters:
+                # valid_chars = "aáàäâãbcçdeéèëêfghiíìïîjklmnñoóòöôpqrstuúùüvwxyzæøå0123456789--&´¹²³⁴⁵⁶⁷⁸⁹⁰₀₁₂₃₄₅₆₇₈₉ₓ§"
+                valid_chars = (
+                    "abcdeéfghijklmnopqrstuvwxyzæøå0123456789--&´¹²³⁴⁵⁶⁷⁸⁹⁰₀₁₂₃₄₅₆₇₈₉ₓ"
+                )
+                # If word contains invalid characters, skip
+                valid = True
+                for char in index:
+                    if char not in valid_chars:
+                        valid = False
+                        break
+                if not valid:
+                    logging.info('Skipping "%s" due to invalid characters' % index)
+                    continue
+            if args.remove_words_with_only_numbers:
+                if index.isnumeric():
+                    #                    logging.info('Skipping "%s" due to only numbers' % index)
+                    continue
+            vector_cols = "\t".join(map(str, vector))
+            out = f"{index}\t{sum(vector)}\t{vector_cols}\n"
             foutput.write(out)
     #            print(out)
     logging.info("... finished.")
@@ -159,7 +236,7 @@ def frequency_table(args, table):
             continue
         vector = data.tolist()
 
-        out = "%s;%s;%s\n" % (index, ";".join(map(str, vector)), sum(vector))
+        out = "%s\t%s\t%s\n" % (index, "\t".join(map(str, vector)), sum(vector))
         foutput.write(out)
     foutput.close()
     logging.info("... finished.")
@@ -171,7 +248,11 @@ def process_corpus(args):
     for fname in sorted(os.listdir(root_dir)):
         if os.path.isdir(os.path.join(root_dir, fname)):
             logging.info("Counting subcorpus %s" % (os.path.join(root_dir, fname)))
-            counts = count_corpus(os.path.join(root_dir, fname), args.keep_characters)
+            counts = count_corpus(
+                os.path.join(root_dir, fname),
+                args.keep_characters,
+                args.remove_listing_hyphenated_words,
+            )
 
             new = pd.DataFrame(
                 data=list(dict(counts).values()),
