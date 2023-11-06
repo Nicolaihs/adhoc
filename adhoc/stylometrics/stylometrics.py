@@ -91,7 +91,12 @@ def split_text(text: str, splits: int = 2) -> List[str]:
         raise ValueError("Splits must be 1, 2 or 3")
 
 
-def get_documents(source_path, splits: int = 2, skips: List[str] | None = None):
+def get_documents(
+    source_path,
+    splits: int = 2,
+    skips: List[str] | None = None,
+    no_authors: bool = False,
+):
     for root, _, files in os.walk(source_path):
         for file in files:
             if skips:
@@ -112,9 +117,18 @@ def get_documents(source_path, splits: int = 2, skips: List[str] | None = None):
                     basename = os.path.basename(file_path)
                     if ".paragraphed" in basename:
                         basename = basename.split(".paragraphed")[0]
-                    if "_" in basename:
+                    if no_authors:
+                        author = basename
+                        title = basename
+                    elif "_" in basename:
                         author = basename.split("_")[1]
                         title = basename.split("_")[2]
+                    elif re.search(r"\d\.txt$", basename):
+                        author = re.sub(r" *\d\.txt$", "", basename)
+                        title = basename
+                    elif basename.endswith(".txt"):
+                        author = basename.replace(".txt", "")
+                        title = basename
                     else:
                         author = basename
                         title = basename
@@ -158,12 +172,13 @@ def create_corpus(
     do_calibrate: bool = True,
     save_dir: str | None = None,
     splits: int = 2,
+    no_authors: bool = False,
 ):
     pickle_file = get_corpus_filepath(name, save_dir)
     corpus = Corpus()
     logger.info("Reading documents")
     for author, title, content in get_documents(
-        source_path, splits=splits, skips=skips
+        source_path, splits=splits, skips=skips, no_authors=no_authors
     ):
         corpus.add_book(author, title, content)
 
@@ -207,7 +222,8 @@ def cli():
 @click.option("--language", type=click.Choice(["da", "en"]), default="da")
 @click.option("--save-dir", type=click.Path(exists=True))
 @click.option("--splits", type=int, default=2)
-def create(name, source_path, skip, language, save_dir, splits):
+@click.option("--no-authors", type=bool, default=False)
+def create(name, source_path, skip, language, save_dir, splits, no_authors):
     create_corpus(
         name,
         source_path,
@@ -216,6 +232,7 @@ def create(name, source_path, skip, language, save_dir, splits):
         do_calibrate=True,
         save_dir=save_dir,
         splits=splits,
+        no_authors=no_authors,
     )
 
 
@@ -228,8 +245,17 @@ def create(name, source_path, skip, language, save_dir, splits):
 @click.option("--language", type=click.Choice(["da", "en"]), default="da")
 @click.option("--save-dir", type=click.Path(exists=True))
 @click.option("--splits", type=int, default=1)
+@click.option("--no-authors", type=bool, default=False)
 def analyze(
-    work, reference_name, source_path, skip, vocab_size, language, save_dir, splits
+    work,
+    reference_name,
+    source_path,
+    skip,
+    vocab_size,
+    language,
+    save_dir,
+    splits,
+    no_authors,
 ):
     if source_path:
         skips = list(skip) + [os.path.basename(item) for item in work]
@@ -241,6 +267,7 @@ def analyze(
             do_calibrate=True,
             save_dir=save_dir,
             splits=splits,
+            no_authors=no_authors,
         )
     else:
         reference_corpus = load_reference_corpus(reference_name, save_dir=save_dir)
