@@ -34,6 +34,7 @@ def find_matching_files(input_path, content_path, content_type, output_file):
                             )
                             item = {
                                 "id": data.get("id"),
+                                "uid": data.get("_uid"),
                                 "text": data.get("text"),
                                 "path": data.get("_path"),
                                 "title": data.get("title"),
