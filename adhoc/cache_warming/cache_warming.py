@@ -30,12 +30,12 @@ HEADERS = {
     "--delay", type=float, default=1, help="Delay (in seconds) between each lookup."
 )
 @click.option(
-    "--start-row", type=int, default=0, help="Delay (in seconds) between each lookup."
+    "--start-row", type=int, default=0, help="Starting row in the input file."
 )
 @click.option(
     "--base-urls",
     type=str,
-    default="https://ordnet.dk/ddo/ordbog?={word}",
+    default="https://ordnet.dk/ddo/ordbog?query={word}",
     help="Comma separated list of base URLs to lookup. Use {word} for place where query word should be inserted. Default: https://ordnet.dk/ddo/ordbog?={word}. Example: https://ordnet.dk/ddo/ordbog?={word},https://ordnet.dk/ddo/ordbog/?query={word}",
 )
 def main(
@@ -43,7 +43,7 @@ def main(
     delay: float,
     start_row: int,
     base_urls: str = "https://ordnet.dk/ddo/ordbog?query={word}",
-):
+) -> None:
     word_list = parse_words(input_file)
     lookup_urls(word_list, base_urls, delay, start_row)
 
@@ -52,10 +52,10 @@ def parse_words(input_file: IO[str]) -> List[str]:
     """Parse words from input file
 
     Args:
-        input_file (IO[str]):
+        input_file: filepath for input file
 
     Returns:
-        List[str]: a list of words
+        a list of words
     """
     words = []
     for line in input_file:
@@ -65,16 +65,14 @@ def parse_words(input_file: IO[str]) -> List[str]:
     return words
 
 
-def lookup_urls(
-    words: List[str], base_urls: List[str], delay: float, start_row: int
-) -> None:
+def lookup_urls(words: List[str], base_urls: str, delay: float, start_row: int) -> None:
     """Create URLs and lookup each of them
 
     Args:
-        words (List[str]): a list of words
-        base_urls (List[str]): a list of base URLs to lookup
-        delay (float): the delay between each lookup
-        start_row (int): which row to start from
+        words: a list of words
+        base_urls: base URLs to lookup, comma separated
+        delay: the delay between each lookup
+        start_row: which row to start from
     """
 
     def get_capitalized(word: str) -> str:
@@ -107,8 +105,10 @@ def lookup_urls(
     print(f"Lookup delay: {delay} seconds")
     print(f"Looking up these base_urls: {base_urls}")
 
+    base_url_list = base_urls.split(",")
+
     progress_bar = tqdm(
-        total=len(words) * len(base_urls),
+        total=len(words) * len(base_url_list),
         desc="URL",
         unit="url",
         leave=True,
@@ -117,9 +117,8 @@ def lookup_urls(
 
     varnish_count = 0
     total_requests = 0
-    base_urls = base_urls.split(",")
     for word in words:
-        for base_url in base_urls:
+        for base_url in base_url_list:
             url = base_url.format(word=word)
             response = requests.get(url, headers=HEADERS, timeout=5)
 
