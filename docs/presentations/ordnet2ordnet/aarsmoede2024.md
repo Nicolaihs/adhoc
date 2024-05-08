@@ -39,15 +39,28 @@ _class: invert lead -->
 
 * Nicolai Harvig Sørensen
 * email: [nhs@dsl.dk](mailto:nhs@dsl.dk)
-* ansat på DSL siden 2005, på ordnet.dk siden 2005-
+* ansat på DSL siden 2005, udvikler på ordnet.dk 2005-
+
 ![w:1024](images/tid.png)
+
+<!-- Jeg skal tale om et projekt om en helt ny version af ordnet.dk som vi arbejder på i øjeblikket -->
 
 ---
 
 # Om dette projekt
   
 * særbevilling fra Kulturministeriet 2023
-* Carlsbergfondets grundbevilling til DSL 2023-25
+* Carlsbergfondets bevilling til DSL 2023-25
+
+<!-- Arbejdet med et nyt ordnet.dk var egentlig allerede i gang, men med en særbevilling fra Kulturministeriet 2023 sammen med Carlsbergfondets bevilling blev det muligt at indhente ekstern konsulenthjælp -->
+
+---
+
+# Hvorfor?
+
+![h:400px](images/hvorfor.jpeg)
+
+<!-- Først er det måske nødvendigt at fortælle hvorfor det har været nødvendigt at med en ny version af ordnet.dk. Selvom den har kørt stort set uændret siden 2009 har vi faktisk ikke rigtigt fået klager over at den ikke er tidssvarende, så hvorfor kaste sig over dette arbejde? -->
 
 ---
 
@@ -55,11 +68,19 @@ _class: invert lead -->
 
 ![h:400px](images/bomb.jpg)
 
+<!-- 
+Den vigtigtste grund er simpelthen teknik. Hjemmesiden bliver drevet af gammel teknik som er svær at vedligeholde og som det er svært at finde konsulenter til 
+-->
+
 ---
 
 # Derfor 2: Vokseværk
 
-![h:400px](images/growingpains.jpg)
+![h:400px](images/growingpains.jpeg)
+
+<!-- 
+Oprindeligt var ordnet.dk designet til at vise to ordbøger, Den Danske Ordbog og Ordbog over det danske Sprog. Men 
+-->
 
 ---
 
@@ -73,7 +94,7 @@ img {
 
 ---
 
-# Derfor 3: Forvirring
+# Derfor 3: Brand-forvirring
 
 ![w:700px](images/ordnet.png)
 ![w:700px](images/ddo.png)
@@ -82,13 +103,26 @@ img {
 
 # Derfor 4: Ændrede tider, ændrede brugere
 
----
+![w:400px](images/caveman.jpeg)
 
-![w:400px](images/mock.png)
+<!-- 
+Der er sket meget på 15 år, ikke kun med teknikken men også med den måde brugerne tilgår vores hjemmeside.
+-->
 
+<!-- 
+-->
 ---
 
 ![w:1024px](images/devices.png)
+
+<!-- Næsten halvdelen af alle brugere tilgår ordnet.dk fra en smartphone - også selv der findes en dedikeret app til Den Danske Ordbog 
+
+Og det er selvom brugerne blive mødt af denne hjemmesiden på en smartphone:
+-->
+
+---
+
+![w:400px](images/mock.png)
 
 ---
 
@@ -106,6 +140,10 @@ img {
 
 ---
 
+![w:1024px](images/ordvaeg.png)
+
+---
+<!-- 
 # Derfor 6: Designproblem
 
 ![h:400px](images/oops.gif)
@@ -113,8 +151,8 @@ img {
 ---
 
 ![w:1024px](images/homografproblem.png)
-
 ---
+-->
 
 # Dwarf
 
@@ -174,8 +212,11 @@ Den gik ikke med Mie.
 ---
 
 <style scoped>
-h1 {
-    border: 10px solid red;
+section {
+    padding-top: 150px;
+}
+blockquote {
+    font-size: 150%
 }
 </style>
 DISCLAIMER:
@@ -186,5 +227,49 @@ DISCLAIMER:
 
 <!-- Grundidéen er at gøre selve søgeresulatet så roligt som muligt og samtidig at gøre det nemmere at komme videre til næste relevante opslag 
 
-Og samtidig at sikre at man
+Og samtidig at sikre at man er bedre hjulpet til at finde det ønskede opslagsord i første hug. Dette sker gennem end udvide autofuldførelsesliste der kommer frem søgning
 -->
+
+![w:1024px](images/old_auto.png)
+
+---
+
+![w:1024px](images/new_auto.png)
+
+---
+
+# Søgeresultat
+
+---
+
+![w:1024px](images/krampe1.png)
+
+<!-- Fokus er nu udelukkende på det ord der er slået op, men stadig mulighed for at vælge en anden homograf -->
+
+---
+
+![w:1024px](images/krampe_below.png)
+
+<!-- ... og under selve opslaget er der links til den samme søgning i andre bøger og i andre opslag i samme ordbog.
+
+Modsat før er der nu plads til at vise snaser fra matchet, så brugeren med det samme kan se om det er et relevant link. I den gamle version må brugeren klikke sig ind på hver enkelt opslag for at se om det er relevant
+se fx dette eksempel på en fritekst søgning i ODS nu: -->
+
+ ---
+
+ ![w:1024px](images/krampe_fritekst_old.png)
+
+---
+
+ ![bg contain](images/forside_mobil.png)
+ ![bg contain](images/krampe_mobil.png)
+
+---
+
+<!-- Prisen for denne luksus er denne: -->
+
+![bg cover 180%](images/krampe_annoteret.png)
+
+<!-- Så brugeren ikke drukner i lange opslag uden at opdage de andre muligheder der nu findes under opslaget. Dette skal nok - og har allerede internt in DDO-redaktionen skabt debat -->
+
+<!-- Og også internt i mig. Jeg protesterede over Vis mere-knappen, jeg protesterede over udelukkelsen af Alfabetisk liste og fjernelse af søgeresultatlisten til højre -->
