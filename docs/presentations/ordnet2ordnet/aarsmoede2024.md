@@ -29,9 +29,9 @@ _class: invert lead -->
 
 # Fra ordnet.dk til ordnet.dk
 
-## Nicolai Hartvig Sørensen
+Nicolai Hartvig Sørensen
 
-### Det Danske Sprog- og Litteraturselskabs årsmøde 2024
+Det Danske Sprog- og Litteraturselskabs årsmøde 2024
 
 <!--
 Jeg hedder Nicolai og jeg er blevet bedt om at fortælle lidt om arbejdet med at udvikle en ny version af ordnet.dk
@@ -48,7 +48,7 @@ Jeg hedder Nicolai og jeg er blevet bedt om at fortælle lidt om arbejdet med at
 ![w:1024](images/tid.png)
 
 <!-- 
-Jeg arbejdet på DSL siden 2005, og jeg har faktisk arbejdet med ordnet.dk lige siden 2005 med ODS på nettet.
+Jeg arbejdet på DSL siden 2005, og jeg har faktisk arbejdet med ordnet.dk lige fra starten, så jeg var også med til det oprindelige "ODS på nettet".
 -->
 
 ---
@@ -59,7 +59,7 @@ Jeg arbejdet på DSL siden 2005, og jeg har faktisk arbejdet med ordnet.dk lige 
 - Carlsbergfondets bevilling til DSL 2023-25
 
 <!--
-Arbejdet med et nyt ordnet.dk var egentlig allerede i gang, men med en særbevilling fra Kulturministeriet 2023 sammen med Carlsbergfondets bevilling blev det muligt at indhente ekstern konsulenthjælp
+Arbejdet med et nyt ordnet.dk var egentlig allerede i gang, men med en særbevilling fra Kulturministeriet 2023 sammen med Carlsbergfondets bevilling blev det muligt at indhente ekstern konsulenthjælp så vi kunne få **nye øjne** på opgaven.
 -->
 
 ---
@@ -69,7 +69,9 @@ Arbejdet med et nyt ordnet.dk var egentlig allerede i gang, men med en særbevil
 ![h:400px](images/hvorfor.jpeg)
 
 <!--
-Først er det måske nødvendigt at fortælle hvorfor det har været nødvendigt at med en ny version af ordnet.dk. Selvom den har kørt stort set uændret siden 2009 har vi faktisk ikke rigtigt fået klager over at den ikke er tidssvarende, så hvorfor kaste sig over dette arbejde?
+Men først er det måske nødvendigt at fortælle hvorfor det overhovedet har været nødvendigt at med en ny version af ordnet.dk. 
+
+Selvom den har kørt stort set uændret siden 2009 og 15 år er meget i it-sammenhæng, har vi egentlig ikke været utilfreds med den. 
 -->
 
 ---
@@ -79,9 +81,11 @@ Først er det måske nødvendigt at fortælle hvorfor det har været nødvendigt
 ![h:400px](images/bomb.jpg)
 
 <!-- 
-Den vigtigtste grund er simpelthen teknik. Hjemmesiden bliver drevet af gammel teknik som er svær at vedligeholde og som det er svært at finde konsulenter til.
+Den vigtigtste grund er simpelthen teknik. Hjemmesiden bliver drevet af gammel teknik som er svær at vedligeholde og som det er svært at finde konsulenter til
+
 Den har også været meget svært at skalere op for at følge de flere og flere brugere gennem årene.
-Det er simpelt hen en tikkende bombe - og på et tidspunkt inden alt for længe vil vi ikke kunne få sitet op igen ved et nedbrud.
+
+Det er simpelt hen en tikkende bombe - og på et tidspunkt inden alt for længe vil vi ikke kunne få sitet op igen efter et nedbrud.
 -->
 
 ---
@@ -93,7 +97,11 @@ Det er simpelt hen en tikkende bombe - og på et tidspunkt inden alt for længe 
 <!-- 
 Den anden grund er vokseværk.
 
-Oprindeligt var ordnet.dk designet til at vise to ordbøger, Den Danske Ordbog og Ordbog over det danske Sprog. Men i mellemtiden er der kommet flere ordbøger til, så vi nu hoster 12 online ordbøger.
+Oprindeligt var ordnet.dk designet til at vise kun to ordbøger, _Den Danske Ordbog_ og _Ordbog over det danske Sprog_. Men i mellemtiden er der kommet flere ordbøger til, så vi nu de sidste par år har hostet 12 online ordbøger.
+
+DSL vil gerne samle alle ordbøger på samme site, ikke mindst for at bruge den store trafik til Den Danske Ordbog til at gøre opmærksom på de mere niche-prægede ordbøger.
+
+Men:
 -->
 
 ---
@@ -107,7 +115,9 @@ img {
 ![w:1024px](images/faneblade.png)
 
 <!--
-Og den måde navigationen på det nuværende site er tænkt hvor man vælger ordbog i faneblade kan simåelt hen ikke håndtere det.
+Det er der ikke plads til på det nuværende _ordnet.dk_ fordi navgiation mellem ordbøger foregår med et fanebladssystem.
+
+Vi kan ikke få plads til alle 12 ordbøger så noget må i hvert fald ske.
 -->
 
 ---
@@ -118,7 +128,10 @@ Og den måde navigationen på det nuværende site er tænkt hvor man vælger ord
 ![w:700px](images/ddo.png)
 
 <!--
-Vi oplever desuden at brugere har haft svært ved afkode om de slår op i "ordnet.dk" eller i "Den Danske Ordbog", så der er et eller andet ved det nuværende site der forvirrer.
+En tredje grund er brand-forvirring.
+
+Vi har oplevet at mange brugere har haft svært ved afkode om de slår op i "ordnet.dk" eller i "Den Danske Ordbog", så der er et eller andet ved det nuværende site der forvirrer.
+
 Det vigtigt at få håndteret denne forvirring, ikke mindst så Den Danske Ordbog kan stå stærkere i ansøgningssammenhæng. Fonde skal være sikre på hvad de faktisk støtter.
 -->
 
@@ -129,8 +142,7 @@ Det vigtigt at få håndteret denne forvirring, ikke mindst så Den Danske Ordbo
 ![w:400px](images/caveman.jpeg)
 
 <!-- 
-Der er sket meget på 15 år, ikke kun med teknikken men også med den måde brugerne bruger vores hjemmeside, og ikke mindst hvorfra.
-Ordnet.dk er ikke rigtigt fulgt med tiderne.
+Der er også sket noget med brugerne på de 15 år, og hjemmesiden er ikke rigtigt fulgt med tiderne.
 -->
 
 ---
@@ -138,9 +150,9 @@ Ordnet.dk er ikke rigtigt fulgt med tiderne.
 ![w:1024px](images/devices.png)
 
 <!--
-Fx viser vores statistikk at næsten halvdelen af alle brugere tilgår ordnet.dk fra en smartphone - også selv der findes en dedikeret app til mange af ordbøgerne. 
+Fx viser vores statistik at næsten halvdelen af alle brugere tilgår ordnet.dk fra en smartphone - også selv der findes en dedikeret app til mange af ordbøgerne. 
 
-Og det er selvom brugerne blive mødt af denne hjemmeside på en smartphone:
+Og også selvom brugerne blive mødt af dette syn på en smartphone:
 -->
 
 ---
@@ -148,7 +160,7 @@ Og det er selvom brugerne blive mødt af denne hjemmeside på en smartphone:
 ![w:400px](images/mock.png)
 
 <!--
-Vi havde IKKE forudset hvor populære smartphones ville blive da vi arbejdet med designet i 2008 og 2009...
+Vi kan godt afsløre at vi ikke havde IKKE forudset hvor populære smartphones ville blive, da vi arbejdet med designet i 2008 og 2009...
 -->
 
 ---
@@ -158,10 +170,11 @@ Vi havde IKKE forudset hvor populære smartphones ville blive da vi arbejdet med
 ![h:400px](images/too_much.jpg)
 
 <!--
-for det femte har vi for meget af det hele, og det er også noget Dwarf har gentaget over for os i processen.
+For det femte har vi for meget af det hele, og det er også noget konsulenterne har gentaget over for os i processen.
+
 Vi har så mange oplysninger at bliver svært at få overblik over vores sider.
 
-Selvom ordnet.dk startede ret rent og fint, så er indholdet efterhånden vokset uden at vi rigtigt har lagt en plan for det.
+For selvom ordnet.dk startede ret rent og fint, så er indholdet efterhånden vokset uden at vi rigtigt har lagt en plan for det.
 -->
 
 ---
@@ -183,27 +196,8 @@ Vi har en lang menu-navigation i venstre spalte, vi har nogle ordlister i højre
 <!--
 Det samme på en søgeresultatside. Der sker så meget at man faktisk vænner sig til kun at kigge i selve indholdsfeltet og ignorere alt uden om.
 -->
-<!--
----
-
-![w:1024px](images/ordvaeg.png)
-
-Vi har heller ikke været gode til at udnytte hjemmesidemediet når vi kommunikerer med brugerne.
-
-Her er for eksempel 
--->
 
 ---
-<!-- 
-# Derfor 6: Designproblem
-
-![h:400px](images/oops.gif)
-
----
-
-![w:1024px](images/homografproblem.png)
----
--->
 
 # Dwarf
 
@@ -219,22 +213,17 @@ Mie er brugergrænsefaldeekspert og benhård, og Adam er grafisk designer.
 
 # Overblik
 
-<!-- 
-* Hver ordbog sit site
-* "Ordnet.dk" skjult
-* Åbning opad
-* Inddeling i perioder
--->
-
 ![h:500px](images/map.jpeg)
+
 <!-- 
-Den opgave de blev stillet, var at skabe det manglende overblik.
+Den opgave der blev stillet til Dwarf, var at skabe det manglende overblik over ordnet.dk med 12 ordbøger - og skabe et nyt grafisk design -- uden ødelægge forbindelsen til det gamle ordnet.dk.
 
 * Hvordan sikrer vi at brugerne ved hvilken ordbog de søger i?
 * Hvordan gør vi det muligt for brugerne at finde en ordbog de er interesseret i, når ordbøgerne er så mange og dækker så forskellige perioder?
 
 De kunne ikke helt holde sig til den opgave, men det vender jeg tilbage til.
 -->
+
 ---
 
 ![w:1024px](images/ddo_forside.png)
@@ -265,13 +254,16 @@ Vi kan også se at al omtale af ordnet.dk er forsvundet. Der er lagt vægt på a
 
 Det er for at fortælle brugeren hvad de søger i lige nu og for at undgå sammenblandingen af fx Den Danske Ordbog og ordnet.dk.
 
-For at navigere til en anden ordbog, åbner man et nagivationspanel ved at klikke på 
-
+For at navigere til en anden ordbog, åbner man et nagivationspanel ved at klikke på ordbogens navn med et traditionelt åbne-ikon
 -->
 
 ---
 
 ![w:1024px](images/navigation.png)
+
+<!-- 
+Det ser vi her.
+-->
 
 ---
 
@@ -311,12 +303,12 @@ Hver periode har sit farvetema. Der er for mange ordbøger til at hver ordbog ka
 
 # 2 Søgning
 
-<!-- Det var egentlig den opgave Dwarf havde fået, og vi synes at de løste opgaven godt.
+<!-- Det var egentlig den opgave Dwarf havde fået, og vi synes at de løste den opgave godt.
 
 Men det var umuligt at stoppe dem i også
-at kigge på søgeresultatet.
+at kigge på søgeresultatet, selvom vi flere gange huskede dem på at de måtte ikke ændre søgeresultatet ...
 
-Jeg havde håbet på en lidt pænere stil til den søgenavigation som jeg i mellemtiden havde udviklet, men ikke andet.
+Jeg havde måske håbet på en lidt pænere stil til den søgenavigation som jeg i mellemtiden havde udviklet, men ikke mere end det.
 
 Den gik ikke med Mie.
 -->
@@ -336,7 +328,7 @@ DISCLAIMER:
 > »Jeg hadede Dwarfs forslag til søgning første gang jeg så den« – _Fiktivt citat, Nicolai Hartvig Sørensen_ (2024)
 
 <!--
-Jeg må indrømme at da Mie først fremlagde sine tanker om søgning var jeg skuffet - og jeg tænkte at hun slet ikke havde forstået opslag i ordbøger.
+Og jeg må indrømme at da Mie først fremlagde sine tanker om søgning, så var jeg faktisk skuffet - og jeg tænkte at hun slet ikke havde forstået opslag i ordbøger.
 
 Men desværre var hun meget overbevisende ...
 -->
@@ -347,9 +339,9 @@ Dwarf ønskede to ting:
 1. Gøre det nemmere at vælge det rigtige ord
 2. Et roligere søgeresultat
 
-For at gøre det nemt at vælge det rigtige ord, vil Dwarf gerne væk fra de simple ordlister hvor man kun ser ordet og eventuelt en ordklasse, men ikke mere.
+For at gøre det nemt at vælge det rigtige ord, vil Dwarf gerne væk fra de simple ordlister hvor man kun ser ordet og eventuelt en ordklasse, men ikke mere end det.
 
-Fx i autofuldførelseslisten - altså den ordliste der kommer frem når man skriver i søgefeltet
+Et eksempel er autofuldførelseslisten - altså den ordliste der kommer frem når man skriver i søgefeltet
 -->
 
 ---
@@ -357,9 +349,7 @@ Fx i autofuldførelseslisten - altså den ordliste der kommer frem når man skri
 ![w:1024px](images/old_auto.png)
 
 <!--
-
-Dette er den nuværende autofuldførelse: Det er bare en liste af ord, og brugeren for ikke nogen hjælp til at vælge mellem ordene
-
+Dette er den nuværende autofuldførelse: Det er bare en liste af ord, og brugeren får ikke nogen hjælp til at vælge mellem ordene
 -->
 
 ---
@@ -369,7 +359,9 @@ Dette er den nuværende autofuldførelse: Det er bare en liste af ord, og bruger
 <!--
 Dette er Dwarfs forslag. Her er der både kommet ordklasse og en kort glosse der skal gøre det muligt at brugeren at identificere et ord.
 
-Samtidig fremgår det hvilken ordbog der er tale om. Dette er altid inkluderet fordi den samme type liste både bruges til søgning i en ordbog på tværs af ordbøger.
+Samtidig fremgår det hvilken ordbog der er tale om, Den Danske Ordbog med farven der viser at det er ordbog der beskriver moderne dansk.
+
+Dette er altid inkluderet fordi den samme type liste både bruges til søgning i en enkelt ordbog på tværs af ordbøger.
 -->
 
 ---
@@ -381,6 +373,7 @@ For søgeresultatet har det været vigtig for Dwarf både at gøre det så rolig
 
 Men det har også været et princip at lokke brugerne til at gå på opdagelse i andre ordbøger.
 -->
+
 ---
 
 ![w:1024px](images/krampe1.png)
@@ -388,9 +381,9 @@ Men det har også været et princip at lokke brugerne til at gå på opdagelse i
 <!-- 
 Her er så et eksempel på et opslag.
 
-Fokus er nu udelukkende på det ord der er slået op
+Fokus er nu udelukkende på det ord der er slået op.
 
-Forhåbentlig har autofuldførelsen sørget for at det faktisk er det rigtige opslag, men der er stadig mulighed for at vælge en anden homograf med knapperne over opslagsordet -->
+Forhåbentlig har autofuldførelsen sørget for at det faktisk er det rigtige opslag, men der er stadig mulighed for at vælge en anden homograf med knapperne over opslagsordet. -->
 
 ---
 
@@ -423,7 +416,9 @@ Mens nu vil der være plads til at se om matchet er relevant
  ![bg contain](images/krampe_mobil.png)
 
 <!--
-Og i det hele kan selvfølgelig også vises på mobiltelefoner med samme funktionalitet som på en desktopcomputer. Det er vigtigt fordi vi forventer at så mange brugere skifter mellem desktop og telefon.
+Og det hele kan selvfølgelig også vises på mobiltelefoner med samme funktionalitet som på en desktopcomputer.
+
+Det er vigtigt fordi vi forventer at så mange brugere både bruger desktop og telefon.
 -->
 
 ---
@@ -432,18 +427,20 @@ Og i det hele kan selvfølgelig også vises på mobiltelefoner med samme funktio
 
 ![bg cover 180%](images/krampe_annoteret.png)
 
-<!-- For at brugeren ikke drukner i lange opslag uden at opdage de andre muligheder der nu findes under opslaget, har Dwarf foreslået at vise en Vis mere-knap. Dette skal nok - og har nok allerede skabt debat i redaktionerne - skabt debat -->
+<!-- For at brugeren ikke drukner i lange opslag uden at opdage de andre muligheder der nu findes under opslaget, har Dwarf foreslået at vise en Vis mere-knap. Dette har allerede skabt debat i redaktionerne  -- Og også internt i mig. 
 
-<!-- Og også internt i mig. Jeg protesterede over Vis mere-knappen, indtil jeg blev overbevist om at de fyldige links til andre ordbøger under opslaget, er netop hvad formålet med det nye ordnet.dk er: At give brugerne mulighed for at opdage de andre ordbogsressourcer som tidligere at være skjult. -->
+Jeg stejlede over Vis mere-knappen, indtil jeg blev overbevist om at de fyldigere links til andre ordbøger under opslaget, er netop hvad formålet med det nye ordnet.dk er:
+
+At give brugerne en reel mulighed for at opdage de andre ordbogsressourcer som tidligere har været skjult på andre sites og i anonyme og uinspirerende ordblister. 
+-->
 
 ---
 
 ![h:600px](images/tired.jpeg)
 
-<!--  Det endte med et meget større projekt end forventet fordi Dwarf havde så drastiske forslag til ændringer i søgeresultatet. Selv ikke tre-fire måneders koncentreret arbejde var nok, selvom vi er kommet langt.
+<!-- Det endte med et meget større projekt end vi forventede fordi Dwarf havde så drastiske forslag til ændringer i søgeresultatet. Vi er kommet langt med implementeringen og de fleste funktioner er klar, men der er mange detaljer der skal finpudses før vi kan gå i luften.
 
 * Ikke mindst glosser som nu er centrale for meget af navigationen, fx i autofuldførelseslister, skal automatisk genereres ud fra indholdet hvilket ikke er ligetil i de historiske ordbøger
 
 Men vi mener at resultatet kommer til at løse mange af eller alle de problemer vi havde håbet.
 -->
-*
