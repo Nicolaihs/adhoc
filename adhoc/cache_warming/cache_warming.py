@@ -5,6 +5,8 @@ import click
 from tqdm import tqdm
 from urllib.parse import quote
 
+from tools3.ws_utilities import call_baseforms, call_forms
+
 HEADERS = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
     "Accept-Encoding": "gzip, deflate, br",
@@ -75,6 +77,9 @@ def lookup_urls(words: List[str], base_urls: str, delay: float, start_row: int) 
         start_row: which row to start from
     """
 
+    # HACK
+    base_select_url = "https://ordnet.dk/ddo/ordbog?{a}select={select}&query={word}"
+
     def get_capitalized(word: str) -> str:
         if len(word) == 0:
             return word  # return an empty string if the word is empty
@@ -86,7 +91,7 @@ def lookup_urls(words: List[str], base_urls: str, delay: float, start_row: int) 
     new_words = []
     for word in words:
         new_words.append(word)
-        new_words.append(get_capitalized(word))
+        # new_words.append(get_capitalized(word))
     words = new_words
 
     # Add quoted versions
@@ -99,7 +104,7 @@ def lookup_urls(words: List[str], base_urls: str, delay: float, start_row: int) 
             new_words.append(quote(word))
 
     words = new_words
-    words = list(set(words))
+    words = list(dict.fromkeys(words))
 
     print(f"Total number of words to lookup: {len(words)}")
     print(f"Lookup delay: {delay} seconds")
@@ -118,9 +123,20 @@ def lookup_urls(words: List[str], base_urls: str, delay: float, start_row: int) 
     varnish_count = 0
     total_requests = 0
     for word in words:
+        base_forms = []
+        if " " not in word:
+            base_forms = call_baseforms(word, "ddo")
+        tmp_forms = [f'{bf["word"]},{bf["homno"]}' for bf in base_forms]
+        base_forms = []
+        for form in tmp_forms:
+            if form[-5:] == ",None":
+                form = form[:-5]
+            base_forms.append(form)
+        base_forms = [form for form in base_forms if form.lower() != word.lower()]
+
         for base_url in base_url_list:
             url = base_url.format(word=word)
-            response = requests.get(url, headers=HEADERS, timeout=5)
+            response = requests.get(url, headers=HEADERS, timeout=10)
 
             if "X-Varnish" in response.headers and "X-Cache" in response.headers:
                 cache_status = response.headers["X-Cache"]
@@ -136,6 +152,29 @@ def lookup_urls(words: List[str], base_urls: str, delay: float, start_row: int) 
             )
 
             progress_bar.update(1)
+            time.sleep(delay)
+
+        for select_word in base_forms:
+            select_prefix = "a"
+            if "," in select_word:
+                select_prefix = ""
+            url = base_select_url.format(a=select_prefix, select=select_word, word=word)
+            print(url)
+            response = requests.get(url, headers=HEADERS, timeout=10)
+
+            if "X-Varnish" in response.headers and "X-Cache" in response.headers:
+                cache_status = response.headers["X-Cache"]
+                if cache_status.lower() == "hit":
+                    varnish_count += 1
+            else:
+                cache_status = "Not served by Varnish"
+
+            progress_bar.set_postfix_str(
+                f"Current: {select_word}-{word} | Cache status: {cache_status} | Varnish: {varnish_count} of {total_requests} requests",
+                refresh=True,
+            )
+            total_requests += 1
+
             time.sleep(delay)
 
     progress_bar.close()
