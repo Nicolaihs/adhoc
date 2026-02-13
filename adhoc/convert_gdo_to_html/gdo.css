@@ -1,0 +1,116 @@
+@import "plugin.css";
+/* colors */
+/* #BD2F10 */
+/* margins and paddings */
+@font-face {
+    font-family: GentiumPlusW;
+    src: url(GentiumPlus-R.woff);
+}
+@font-face {
+    font-family: GentiumPlusI;
+    src: url(GentiumPlus-I.woff);
+}
+@font-face {
+    font-family: NewAthenaUnicodeBold;
+    src: url(newathuBold5_7.woff);
+}
+
+.hidden,
+.hiddenStructure,
+.dfooter {
+    display: none;
+}
+
+. .greek {
+    font-family:
+        "GentiumPlusW", "NewAthenaUnicodeBold", "Palatino Linotype", "Georgia";
+    font-size: 110%;
+}
+
+.holem {
+    color: #ca2323;
+}
+
+.holem,
+.headword {
+    font-size: 120%;
+}
+
+.homnr {
+    vertical-align: super;
+    font-size: 80%;
+    margin-top: -0.3em;
+}
+
+.unspecified {
+    color: #74546a;
+}
+
+.em {
+    letter-spacing: 0.1em;
+}
+
+.meta {
+    font-style: italic;
+}
+
+/* Semantic structures */
+.semdel,
+.subsem,
+.supersemdel,
+.supersupersemdel {
+    display: block;
+    margin-top: 6px;
+}
+
+.semdel,
+.supersemdel,
+.supersupersemdel {
+    margin-left: 20px;
+}
+
+.supersemdel > .semdel,
+.supersupersemdel > .semdel,
+.supersupersemdel > .supersemdel {
+    margin-left: 0px;
+}
+
+.betnr,
+.subbetnr,
+.superbetnr,
+.supersuperbetnr {
+    font-family: Arial, Helvetica, sans-serif;
+    display: inline-block;
+    position: relative;
+    left: -20px;
+    width: 0;
+    color: #aaa; /* #f67e7d; /*#ffb997;*/
+}
+
+.subsem {
+    margin-left: 20px;
+}
+
+.subsubbetnr {
+    font-weight: bold;
+    color: #aaa;
+}
+
+.subbetnr {
+    font-style: italic;
+}
+
+.superbetnr,
+.supersuperbetnr {
+    color: #000000;
+}
+
+.sense-modificator {
+    font-style: italic;
+}
+
+.sense-modificator:after {
+    content: ": ";
+}
+
+/*# sourceMappingURL=gdo.css.map */
