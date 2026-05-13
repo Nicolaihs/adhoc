@@ -1,11 +1,11 @@
 import time
-import requests
-from typing import List, IO
-import click
-from tqdm import tqdm
+from typing import IO, List
 from urllib.parse import quote
 
+import click
+import requests
 from tools3.ws_utilities import call_baseforms, call_forms
+from tqdm import tqdm
 
 HEADERS = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
@@ -27,7 +27,7 @@ HEADERS = {
 
 
 @click.command()
-@click.argument("input_file", type=click.File("r"))
+@click.argument("input_file", type=click.File("r", encoding="utf-8"))
 @click.option(
     "--delay", type=float, default=1, help="Delay (in seconds) between each lookup."
 )
@@ -37,17 +37,17 @@ HEADERS = {
 @click.option(
     "--base-urls",
     type=str,
-    default="https://ordnet.dk/ddo/ordbog?query={word}",
+    default="https://ordnet.dk/ddo/ordbog?query={word},https://ordnet.dk/ddo/quick_search?SearchableText={word}&search=S%C3%B8g",
     help="Comma separated list of base URLs to lookup. Use {word} for place where query word should be inserted. Default: https://ordnet.dk/ddo/ordbog?={word}. Example: https://ordnet.dk/ddo/ordbog?={word},https://ordnet.dk/ddo/ordbog/?query={word}",
 )
 def main(
     input_file: IO[str],
     delay: float,
     start_row: int,
-    base_urls: str = "https://ordnet.dk/ddo/ordbog?query={word}",
+    base_urls: str,
 ) -> None:
     word_list = parse_words(input_file)
-    lookup_urls(word_list, base_urls, delay, start_row)
+    lookup_urls(word_list, base_urls=base_urls, delay=delay, start_row=start_row)
 
 
 def parse_words(input_file: IO[str]) -> List[str]:
@@ -62,6 +62,7 @@ def parse_words(input_file: IO[str]) -> List[str]:
     words = []
     for line in input_file:
         line_words = line.strip().split(",")
+        line_words = [word.strip() for word in line_words]
         words.extend(line_words)
     words = [word for word in words if word]
     return words
@@ -123,10 +124,11 @@ def lookup_urls(words: List[str], base_urls: str, delay: float, start_row: int) 
     varnish_count = 0
     total_requests = 0
     for word in words:
+        print(word)
         base_forms = []
         if " " not in word:
             base_forms = call_baseforms(word, "ddo")
-        tmp_forms = [f'{bf["word"]},{bf["homno"]}' for bf in base_forms]
+        tmp_forms = [f"{bf['word']},{bf['homno']}" for bf in base_forms]
         base_forms = []
         for form in tmp_forms:
             if form[-5:] == ",None":
@@ -136,6 +138,7 @@ def lookup_urls(words: List[str], base_urls: str, delay: float, start_row: int) 
 
         for base_url in base_url_list:
             url = base_url.format(word=word)
+            print(url)
             response = requests.get(url, headers=HEADERS, timeout=10)
 
             if "X-Varnish" in response.headers and "X-Cache" in response.headers:
@@ -159,7 +162,6 @@ def lookup_urls(words: List[str], base_urls: str, delay: float, start_row: int) 
             if "," in select_word:
                 select_prefix = ""
             url = base_select_url.format(a=select_prefix, select=select_word, word=word)
-            print(url)
             response = requests.get(url, headers=HEADERS, timeout=10)
 
             if "X-Varnish" in response.headers and "X-Cache" in response.headers:

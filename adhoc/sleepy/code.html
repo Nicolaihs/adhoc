@@ -1,0 +1,127 @@
+<!-- DDO_sovehjaelp_mobile.html -->
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DDO's Sovehjælp</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        body {
+            background: #b3d1f7;
+            font-family: system-ui, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        h1 {
+            font-size: 2.2rem;
+            margin-top: 2rem;
+            text-align: center;
+        }
+        .controls {
+            margin: 2rem 0 1rem 0;
+            display: flex;
+            gap: 1rem;
+        }
+        button {
+            font-size: 1.2rem;
+            padding: 1rem 2.5rem;
+            border-radius: 1.5rem;
+            border: none;
+            background: #1976d2;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        button:active {
+            background: #1565c0;
+        }
+        .audio-player {
+            width: 90vw;
+            max-width: 400px;
+            margin: 1rem auto;
+        }
+        @media (max-width: 600px) {
+            h1 { font-size: 1.5rem; }
+            button { font-size: 1rem; padding: 0.8rem 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <h1>DDO's sovehjælp</h1>
+    <div class="controls">
+        <button id="startBtn">START</button>
+        <button id="stopBtn">STOP</button>
+    </div>
+    <audio id="audio" class="audio-player" controls preload="none"></audio>
+    <div style="margin-top:2rem;">
+        <iframe src="https://giphy.com/embed/l3q2ICbdSmDqnlxC0" width="320" height="240" frameborder="0" allowfullscreen></iframe>
+    </div>
+    <script>
+        // --- PWA install prompt ---
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js');
+        }
+
+        // --- Audio logic ---
+        const filliste = [11000573,11001193,11001300,11001526,11002123,11003772,11003773,11004352,11004503,11004504,11004990,11005324,11005325,11005449,11005467,11005762,11005995,11006155,11006519,11007047,11008597,11009830,11009831,11009833,11009834,11009836,11009838,11009839,11010012,11010098,11010168,11010246,11010337,11010403,11010404,11010405,11010431,11011417,11012172,11015161,11015539,11016967,11016986,11016987,11016989,11018345,11018864,11019648,11019726,11019735,11020127,11020677,11020843,11021946,11022266,11022871,11023538,11025614,11026176,11026225,11026228,11026996,11028292,11029011,11029205,11030113,11030198,11031186,11031227,11031395,11031586,11032726,11033428,11033433,11033440,11034348,11034377,11034378,11035000,11035064,11035069,11035304,11035441,11035453,11035974,11038361,11038415,11038544,11041641,11041938,11042110,11042359,11042798,11043495,11043902,11044100,11044146,11044952,11045153,11045154,11045546,11045558,11045562,11045565,11046450,11046896,11047240,11047489,11047797,11047801,11047897,11047919,11048363,11048366,11048389,11048564,11048849,11048853,11048856,11048858,11048865,11048955,11049289,11050123,11052036,11052144,11052304,11052513,11052514,11052515,11052516,11052518,11052520,11052522,12001358,12001865,12001880,12002730,12002731,12002735,12003276,12003401,12003875,12003925,12004135,12004152,12005091,12005338,12006937,12006949,12006965,12007102,12007104,12007106,12007919,12008202,30000058,30000434,30000435,30000436,30001168,40001461,40002605,40003952,40004226,40004383,41000853,41002001,41002376,41002775,41002946,48005397,48006601,49000758,49001061,49001129,49001360,49001736,49001739,49001965,49002001,49002136,49148198,49199148,50000697,50001477,50001585,50001587,50006346,50006550,50008704,50010614,51000463,51001787,51002358,51002553,51003729,51003752,53000278,53000811,53001306,53004184,53006288,53200330,53401119];
+
+        function getRandomNumberFromArray(arr) {
+            const randomIndex = Math.floor(Math.random() * arr.length);
+            return arr[randomIndex];
+        }
+
+        let intervalId = null;
+        const audio = document.getElementById('audio');
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+
+        function getRandomAudioUrl() {
+            let randomInt = getRandomNumberFromArray(filliste);
+            let randomString = randomInt.toString();
+            let firstFiveDigits = randomString.substring(0, 5);
+            return `https://static.ordnet.dk/mp3/${firstFiveDigits}/${randomString}_1.mp3`;
+        }
+
+        function playRandomAudio() {
+            const url = getRandomAudioUrl();
+            audio.src = url;
+            audio.play();
+            // Media Session API for lock screen controls
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.metadata = new window.MediaMetadata({
+                    title: "DDO Sovehjælp",
+                    artist: "Den Danske Ordbog",
+                    album: "Sovehjælp",
+                    artwork: [
+                        { src: "https://www.dsl.dk/sites/all/themes/dsl/logo.png", sizes: "192x192", type: "image/png" }
+                    ]
+                });
+                navigator.mediaSession.setActionHandler('play', () => { audio.play(); });
+                navigator.mediaSession.setActionHandler('pause', () => { audio.pause(); });
+                navigator.mediaSession.setActionHandler('stop', () => { audio.pause(); audio.currentTime = 0; });
+            }
+        }
+
+        startBtn.onclick = () => {
+            if (intervalId) clearInterval(intervalId);
+            playRandomAudio();
+            intervalId = setInterval(playRandomAudio, 5000);
+        };
+
+        stopBtn.onclick = () => {
+            if (intervalId) clearInterval(intervalId);
+            audio.pause();
+        };
+
+        // Optional: auto-play next when current ends
+        audio.onended = () => {
+            if (intervalId) playRandomAudio();
+        };
+    </script>
+</body>
+</html>

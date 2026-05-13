@@ -1,0 +1,16 @@
+// manifest.json
+{
+  "name": "DDO Sovehjælp",
+  "short_name": "Sovehjælp",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#b3d1f7",
+  "theme_color": "#1976d2",
+  "icons": [
+    {
+      "src": "https://www.dsl.dk/sites/all/themes/dsl/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
